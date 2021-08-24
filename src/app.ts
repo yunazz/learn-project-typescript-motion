@@ -14,7 +14,7 @@ class App {
       "Image Title",
       "https://picsum.photos/600/300"
     );
-    image.attachTo(appRoot, "beforeend");
+    this.page.addChild(image);
 
     // https://www.youtube.com/watch?v=K3-jG52XwuQ
     // https://youtu.be/K3-jG52XwuQ
@@ -22,13 +22,13 @@ class App {
       "Video Title",
       "https://youtu.be/K3-jG52XwuQ"
     );
-    video.attachTo(appRoot, "beforeend");
+    this.page.addChild(video);
 
     const note = new NoteComponent("Note Title", "Note Body");
-    note.attachTo(appRoot, "beforeend");
+    this.page.addChild(note);
 
     const todo = new TodoComponent("Todo Title", "Todo Item");
-    todo.attachTo(appRoot, "beforeend");
+    this.page.addChild(todo);
   }
 }
 
