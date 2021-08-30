@@ -1,50 +1,92 @@
-import { InputDialog } from "./components/dailog/dialog.js";
+import { MediaSectionInput } from "./components/dailog/input/media-input.js";
+import { TextSectionInput } from "./components/dailog/input/text-input.js";
+import {
+  InputDialog,
+  MediaData,
+  TextData,
+} from "./components/dailog/dialog.js";
 import { VideoComponent } from "./components/page/item/video.js";
 import { TodoComponent } from "./components/page/item/todo.js";
 import { NoteComponent } from "./components/page/item/note.js";
 import { ImageComponent } from "./components/page/item/image.js";
 import { PageComponent } from "./components/page/page.js";
+import { Component } from "./components/component.js";
 
+type InputComponentConstructor<T = (MediaData | TextData) & Component> = {
+  new (): T;
+};
 class App {
   private readonly page: PageComponent;
-  constructor(appRoot: HTMLElement) {
+  constructor(appRoot: HTMLElement, private dialogRoot: HTMLElement) {
     this.page = new PageComponent();
     this.page.attachTo(appRoot);
 
-    const image = new ImageComponent(
-      "Image Title",
-      "https://picsum.photos/600/300"
+    this.bindElementToDialog<MediaSectionInput>(
+      "#new-image",
+      MediaSectionInput,
+      (input: MediaSectionInput) => new ImageComponent(input.title, input.url)
     );
-    this.page.addChild(image);
-
-    // https://www.youtube.com/watch?v=K3-jG52XwuQ
-    // https://youtu.be/K3-jG52XwuQ
-    const video = new VideoComponent(
-      "Video Title",
-      "https://youtu.be/K3-jG52XwuQ"
+    this.bindElementToDialog<MediaSectionInput>(
+      "#new-video",
+      MediaSectionInput,
+      (input: MediaSectionInput) => new VideoComponent(input.title, input.url)
     );
-    this.page.addChild(video);
+    this.bindElementToDialog<TextSectionInput>(
+      "#new-note",
+      TextSectionInput,
+      (input: TextSectionInput) => new NoteComponent(input.title, input.body)
+    );
+    this.bindElementToDialog<TextSectionInput>(
+      "#new-todo",
+      TextSectionInput,
+      (input: TextSectionInput) => new TodoComponent(input.title, input.body)
+    );
 
-    const note = new NoteComponent("Note Title", "Note Body");
-    this.page.addChild(note);
+    // For demo :)
+    this.page.addChild(
+      new ImageComponent("Image Title", "https://picsum.photos/800/400")
+    );
+    this.page.addChild(
+      new VideoComponent("Video Title", "https://youtu.be/D7cwvvA7cP0")
+    );
+    this.page.addChild(
+      new NoteComponent("Note Title", "Don't forget to code your dream")
+    );
+    this.page.addChild(new TodoComponent("Todo Title", "TypeScript Course!"));
+    this.page.addChild(
+      new ImageComponent("Image Title", "https://picsum.photos/800/400")
+    );
+    this.page.addChild(
+      new VideoComponent("Video Title", "https://youtu.be/D7cwvvA7cP0")
+    );
+    this.page.addChild(
+      new NoteComponent("Note Title", "Don't forget to code your dream")
+    );
+    this.page.addChild(new TodoComponent("Todo Title", "TypeScript Course!"));
+  }
 
-    const todo = new TodoComponent("Todo Title", "Todo Item");
-    this.page.addChild(todo);
-
-    const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
-    imageBtn.addEventListener("click", () => {
+  private bindElementToDialog<T extends MediaSectionInput | TextSectionInput>(
+    selector: string,
+    InputComponent: InputComponentConstructor<T>,
+    makeSection: (input: T) => Component
+  ) {
+    const element = document.querySelector(selector)! as HTMLButtonElement;
+    element.addEventListener("click", () => {
       const dialog = new InputDialog();
+      const input = new InputComponent();
+      dialog.addChild(input);
+      dialog.attachTo(this.dialogRoot);
 
       dialog.setOncloseListener(() => {
-        dialog.removeFrom(document.body);
+        dialog.removeFrom(this.dialogRoot);
       });
       dialog.setOnSubmitListener(() => {
-        dialog.removeFrom(document.body);
+        const child = makeSection(input);
+        this.page.addChild(child);
+        dialog.removeFrom(this.dialogRoot);
       });
-
-      dialog.attachTo(document.body);
     });
   }
 }
 
-new App(document.querySelector(".document")! as HTMLElement);
+new App(document.querySelector(".document")! as HTMLElement, document.body);
