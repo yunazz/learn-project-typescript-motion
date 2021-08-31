@@ -9,7 +9,7 @@ import { VideoComponent } from "./components/page/item/video.js";
 import { TodoComponent } from "./components/page/item/todo.js";
 import { NoteComponent } from "./components/page/item/note.js";
 import { ImageComponent } from "./components/page/item/image.js";
-import { PageComponent } from "./components/page/page.js";
+import { PageComponent, PageItemComponent } from "./components/page/page.js";
 import { Component } from "./components/component.js";
 
 type InputComponentConstructor<T = (MediaData | TextData) & Component> = {
@@ -18,7 +18,7 @@ type InputComponentConstructor<T = (MediaData | TextData) & Component> = {
 class App {
   private readonly page: PageComponent;
   constructor(appRoot: HTMLElement, private dialogRoot: HTMLElement) {
-    this.page = new PageComponent();
+    this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
 
     this.bindElementToDialog<MediaSectionInput>(
