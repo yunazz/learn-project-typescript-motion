@@ -1,10 +1,10 @@
-import { MediaSectionInput } from "./components/dailog/input/media-input.js";
-import { TextSectionInput } from "./components/dailog/input/text-input.js";
+import { MediaSectionInput } from "./components/dialog/input/media-input.js";
+import { TextSectionInput } from "./components/dialog/input/text-input.js";
 import {
   InputDialog,
   MediaData,
   TextData,
-} from "./components/dailog/dialog.js";
+} from "./components/dialog/dialog.js";
 import { VideoComponent } from "./components/page/item/video.js";
 import { TodoComponent } from "./components/page/item/todo.js";
 import { NoteComponent } from "./components/page/item/note.js";
